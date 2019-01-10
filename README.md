@@ -1,8 +1,8 @@
 # Graylog Server.
 
-Graylog version: 2.4
+Graylog version: 2.5.1
 
-Elasticsearch version: 5.6.8
+Elasticsearch version: 5.6.8 and 6.5.4
 
 Create indice for zimbra. In System / Indices. The index prefix must be zimbra as the image show.
 This is important for the proper functioning of the streams.
