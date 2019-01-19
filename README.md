@@ -25,7 +25,9 @@ Edit zimbra the stream and select the index previusly created
 
 # Zimbra Server
 
-You must install filebeat 5.6.x or any of the versions compatible with the version of elasticsearch 5.6.x. See [Matrix compatibility](https://www.elastic.co/support/matrix#matrix_compatibility)
+You must install filebeat 5.6.x for elasticsearch v5 or filebeat 6.5.x for elasticsearch 6, for any other version of elasticsearch .See [Matrix compatibility](https://www.elastic.co/support/matrix#matrix_compatibility)
+
+In Filebeat 5.6.x use this config...
 
 We will only modify the sessions of Filebeat prospectors and Logstash output.
 
@@ -53,6 +55,57 @@ We will only modify the sessions of Filebeat prospectors and Logstash output.
     paths:
     – /opt/zimbra/log/nginx.access.log
  
+    #———————- Logstash output —————————
+    output.logstash:
+    # The Logstash hosts
+    hosts: ["graylog.dominio.com:5045"]
+ 
+    # Optional SSL. By default is off.
+    # List of root certificates for HTTPS server verifications
+    bulk_max_size: 2048
+    #ssl.certificate_authorities: ["/etc/filebeat/graylog.crt"]
+    template.name: "filebeat"
+    template.path: "filebeat.template.json"
+    template.overwrite: false
+    # Certificate for SSL client authentication
+    #ssl.certificate: "/etc/pki/client/cert.pem"
+ 
+    # Client Certificate Key
+    #ssl.key: "/etc/pki/client/cert.key"
+
+In Filebeat 6.5.x use this config...
+
+We will only modify the sessions of Filebeat inputs and Logstash output.
+
+    #=========================== Filebeat inputs =============================
+
+    filebeat.inputs:
+
+    - type: log
+    paths:
+    - /var/log/mail.log
+    fields_under_root: true
+    fields:
+        type: postfix
+    - type: log
+    fields_under_root: true
+    fields:
+        type: zimbra_audit
+    paths:
+        - /opt/zimbra/log/audit.log
+    - type: log
+    fields_under_root: true
+    fields:
+        type: zimbra_mailbox
+    paths:
+        - /opt/zimbra/log/mailbox.log
+    - type: log
+    fields_under_root: true
+    fields:
+        type: nginx
+    paths:
+        - /opt/zimbra/log/nginx.access.log
+    
     #———————- Logstash output —————————
     output.logstash:
     # The Logstash hosts
